@@ -75,36 +75,54 @@ namespace HeistII
 
             ReconReport(bank);
 
+            List<IRobber> crew = new List<IRobber>();
             RolodexList();
 
-            List<IRobber> crew = new List<IRobber>();
+
+
 
 
 
             void HeistCrew()
             {
                 Console.WriteLine("Enter the Rolodex Number of the New Heist Crew Member : ");
-                int rolodexCrewNum = int.Parse(Console.ReadLine()) - 1;
+                string CrewNum = Console.ReadLine();
+                if (CrewNum == "")
+                {
 
-                crew.Add(rolodex[rolodexCrewNum]);
+                }
+                else
+                {
+                    crew.Add(rolodex[int.Parse(CrewNum) - 1]);
+                    RolodexList();
+                }
 
             }
             void RolodexList()
             {
                 Console.WriteLine("Rolodex Report");
+                int percentageUsed = crew.Sum(item => item.PercentageCut);
                 int count = 0;
                 foreach (IRobber entry in rolodex)
                 {
-                    count++;
-                    Console.WriteLine();
-                    Console.WriteLine($"Rolodex # {count}");
-                    Console.WriteLine($"Name:  {entry.Name}");
-                    Console.WriteLine($"Specialty: {entry.GetType().Name}");
-                    Console.WriteLine($"Skill Level: {entry.SkillLevel}");
-                    Console.WriteLine($"Cut Demand: {entry.PercentageCut}");
+                    if (crew.Contains(entry))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        count++;
+                        Console.WriteLine();
+                        Console.WriteLine($"Rolodex # {count}");
+                        Console.WriteLine($"Name:  {entry.Name}");
+                        Console.WriteLine($"Specialty: {entry.GetType().Name}");
+                        Console.WriteLine($"Skill Level: {entry.SkillLevel}");
+                        Console.WriteLine($"Cut Demand: {entry.PercentageCut}");
 
-                    Console.WriteLine();
+                        Console.WriteLine();
+                    }
                 }
+                HeistCrew();
             }
 
 
@@ -208,7 +226,7 @@ namespace HeistII
                         };
                         rolodex.Add(heavy);
                     }
-                    else
+                    else if (specialty == 3)
                     {
                         LockSpecialist safecracker = new LockSpecialist()
                         {
@@ -217,6 +235,10 @@ namespace HeistII
                             PercentageCut = cutOfLoot
                         };
                         rolodex.Add(safecracker);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Choose a specialty number 1,2 or 3");
                     }
 
                     NewCrew();
