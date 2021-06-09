@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace HeistII
@@ -55,6 +56,14 @@ namespace HeistII
                 Solo, cOmrade, GentleJohnny, Sitar, Jesse, Cole
             };
 
+            Bank bank = new Bank()
+            {
+                AlarmScore = new Random().Next(0, 100),
+                VaultScore = new Random().Next(0, 100),
+                SecurityGuardScore = new Random().Next(0, 100),
+                CashOnHand = new Random().Next(50000, 1000000)
+            };
+
             Console.Clear();
             Console.WriteLine();
             Console.WriteLine("Its time for a bank Heist!! ");
@@ -63,6 +72,104 @@ namespace HeistII
             Console.WriteLine();
             Console.WriteLine($"Looks like we have {rolodex.Count} possible liberators of other peoples money");
             NewCrew();
+
+            ReconReport(bank);
+
+            List<IRobber> crew = new List<IRobber>();
+            RolodexList();
+
+
+
+
+
+
+            void HeistCrew()
+            {
+                Console.WriteLine("Enter the Rolodex Number of the New Heist Crew Member : ");
+                string CrewNum = Console.ReadLine();
+                if (CrewNum == "")
+                {
+
+                }
+                else
+                {
+                    crew.Add(rolodex[int.Parse(CrewNum) - 1]);
+                    RolodexList();
+                }
+
+            }
+            void RolodexList()
+            {
+                Console.WriteLine("Rolodex Report");
+                int percentageUsed = crew.Sum(item => item.PercentageCut);
+                int count = 0;
+                foreach (IRobber entry in rolodex)
+                {
+                    if (crew.Contains(entry))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        count++;
+                        Console.WriteLine();
+                        Console.WriteLine($"Rolodex # {count}");
+                        Console.WriteLine($"Name:  {entry.Name}");
+                        Console.WriteLine($"Specialty: {entry.GetType().Name}");
+                        Console.WriteLine($"Skill Level: {entry.SkillLevel}");
+                        Console.WriteLine($"Cut Demand: {entry.PercentageCut}");
+
+                        Console.WriteLine();
+                    }
+                }
+                HeistCrew();
+            }
+
+
+
+
+            void ReconReport(Bank bank)
+            {
+                List<int> bankRecon = new List<int>()
+                { bank.AlarmScore, bank.VaultScore, bank.SecurityGuardScore};
+                string mostSecure = "";
+                string leastSecure = "";
+
+
+                if (bank.AlarmScore > bank.VaultScore && bank.AlarmScore > bank.SecurityGuardScore)
+                {
+                    mostSecure = "Alarm";
+                }
+                else if (bank.VaultScore > bank.AlarmScore && bank.VaultScore > bank.SecurityGuardScore)
+                {
+                    mostSecure = "Vault";
+                }
+                else
+                {
+                    mostSecure = "Security";
+                }
+                if (bank.AlarmScore < bank.VaultScore && bank.AlarmScore < bank.SecurityGuardScore)
+                {
+                    leastSecure = "Alarm";
+                }
+                else if (bank.VaultScore < bank.AlarmScore && bank.VaultScore < bank.SecurityGuardScore)
+                {
+                    leastSecure = "Vault";
+                }
+                else
+                {
+                    leastSecure = "Security";
+                }
+                Console.WriteLine();
+                Console.WriteLine("-*-  Recon Report  -*-");
+                Console.WriteLine();
+                Console.WriteLine($"Most Secure: {mostSecure} ");
+                Console.WriteLine($"Least Secure: {leastSecure} ");
+                Console.WriteLine();
+                Console.WriteLine("-*-End Recon Report-*-");
+                Console.WriteLine();
+
+            }
 
             void NewCrew()
             {
@@ -73,6 +180,8 @@ namespace HeistII
                 if (name == "")
                 {
                     Console.WriteLine($"We will pick a crew from the {rolodex.Count} in the Heist Rolodex!");
+                    // goto RolodexFilled;
+
                 }
                 else
                 {
@@ -97,7 +206,7 @@ namespace HeistII
 
                     if (specialty == 1)
                     {
-                        // string hacker = $"hacker{rolodex + 1}";
+
                         Hacker hacker = new Hacker()
                         {
                             Name = name,
@@ -117,7 +226,7 @@ namespace HeistII
                         };
                         rolodex.Add(heavy);
                     }
-                    else
+                    else if (specialty == 3)
                     {
                         LockSpecialist safecracker = new LockSpecialist()
                         {
@@ -127,10 +236,16 @@ namespace HeistII
                         };
                         rolodex.Add(safecracker);
                     }
+                    else
+                    {
+                        Console.WriteLine("Choose a specialty number 1,2 or 3");
+                    }
 
+                    NewCrew();
                 }
+                // RollodexFilled:
+                //     Console.WriteLine($"We will pick a crew from the {rolodex.Count} in the Heist Rolodex!");
 
-                NewCrew();
             }
         }
     }
