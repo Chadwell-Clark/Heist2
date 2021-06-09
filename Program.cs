@@ -54,6 +54,7 @@ namespace HeistII
             {
                 Solo, cOmrade, GentleJohnny, Sitar, Jesse, Cole
             };
+
             Console.Clear();
             Console.WriteLine();
             Console.WriteLine("Its time for a bank Heist!! ");
@@ -61,12 +62,22 @@ namespace HeistII
             Console.WriteLine("Lets see how may accomplices we have in the ole Bank Heist Rolodex");
             Console.WriteLine();
             Console.WriteLine($"Looks like we have {rolodex.Count} possible liberators of other peoples money");
-            Console.WriteLine();
-            Console.Write("Enter a name to add to our collection of honor bound vagabonds... ");
-            string name = Console.ReadLine();
-            Console.WriteLine(name);
+            NewCrew();
 
-            Console.WriteLine($@"What Specialty does {name} have?
+            void NewCrew()
+            {
+                Console.WriteLine();
+                Console.Write("Enter a name to add to our collection of honor bound vagabonds... ");
+                string name = Console.ReadLine();
+
+                if (name == "")
+                {
+                    Console.WriteLine($"We will pick a crew from the {rolodex.Count} in the Heist Rolodex!");
+                }
+                else
+                {
+
+                    Console.WriteLine($@"What Specialty does {name} have?
 
                  Choose 1, 2 or 3...
 
@@ -74,10 +85,53 @@ namespace HeistII
             2 - Muscle (Disarms Guards)
             3 - Lock Specialist (Safe Cracker)
             ... ");
-            int specialty = int.Parse(Console.ReadLine());
+                    int specialty = int.Parse(Console.ReadLine());
 
+                    Console.WriteLine();
+                    Console.Write($"Enter {name}'s SkillLevel (between 1 and 100) :");
+                    int skillLevel = int.Parse(Console.ReadLine());
 
+                    Console.WriteLine();
+                    Console.Write($"What Percentage of the cut does {name} want? (between 1 and 100 percent) :");
+                    int cutOfLoot = int.Parse(Console.ReadLine());
 
+                    if (specialty == 1)
+                    {
+                        // string hacker = $"hacker{rolodex + 1}";
+                        Hacker hacker = new Hacker()
+                        {
+                            Name = name,
+                            SkillLevel = skillLevel,
+                            PercentageCut = cutOfLoot
+                        };
+                        rolodex.Add(hacker);
+
+                    }
+                    else if (specialty == 2)
+                    {
+                        Muscle heavy = new Muscle()
+                        {
+                            Name = name,
+                            SkillLevel = skillLevel,
+                            PercentageCut = cutOfLoot
+                        };
+                        rolodex.Add(heavy);
+                    }
+                    else
+                    {
+                        LockSpecialist safecracker = new LockSpecialist()
+                        {
+                            Name = name,
+                            SkillLevel = skillLevel,
+                            PercentageCut = cutOfLoot
+                        };
+                        rolodex.Add(safecracker);
+                    }
+
+                }
+
+                NewCrew();
+            }
         }
     }
 }
